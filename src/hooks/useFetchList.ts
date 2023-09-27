@@ -1,11 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { useEffect, useState, useCallback } from "react";
-
-interface FetchListResult<T> {
-  data: T | null;
-  loading: boolean;
-  error: boolean;
-}
+import { FetchListResult } from "../types";
 
 const useFetchList = <T>(options: AxiosRequestConfig): FetchListResult<T> => {
   const [data, setData] = useState<T | null>(null);
@@ -29,10 +24,13 @@ const useFetchList = <T>(options: AxiosRequestConfig): FetchListResult<T> => {
 
   useEffect(() => {
     fetchData();
-    // eslint-disable-next-line
   }, []);
 
-  return { data, loading, error };
+  const refresh = () => {
+    fetchData();
+  };
+
+  return { data, loading, error, refresh };
 };
 
 export default useFetchList;
