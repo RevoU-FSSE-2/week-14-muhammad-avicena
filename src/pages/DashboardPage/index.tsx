@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -7,6 +7,8 @@ import * as Yup from 'yup';
 import { useFetchList } from '../../hooks';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Container, Paper, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { Category } from '../../types';
+import { useUserProfile } from '../../context/UserProfileContext';
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -18,24 +20,14 @@ const initialValuesAdd = {
     is_active: true,
 };
 
-interface Category {
-    id?: number;
-    name: string;
-    is_active: boolean;
-}
-
-interface DataProfile {
-    name: string;
-    email: string;
-}
-
 const DashboardPage: React.FC = () => {
     const [addModalOpen, setAddModalOpen] = useState<boolean>(false);
-    const [dataList, setData] = useState<Category[]>([]);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editedRow, setEditedRow] = useState<Category | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [rowToDelete, setRowToDelete] = useState<Category | null>(null);
+
+    const { userProfile } = useUserProfile();
 
     const validate = sessionStorage.getItem('userToken');
     const navigate = useNavigate();
@@ -44,37 +36,8 @@ const DashboardPage: React.FC = () => {
         navigate('/');
     }
 
-    const { loading, error } = useFetchList<Category[]>({
+    const { data, loading, error, refresh } = useFetchList<Category[]>({
         url: 'https://mock-api.arikmpt.com/api/category',
-        method: 'GET',
-        headers: {
-            Authorization: `Bearer ${validate}`,
-        },
-    });
-
-    useEffect(() => {
-        fetchData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const fetchData = () => {
-        axios.get('https://mock-api.arikmpt.com/api/category',
-            { headers: { Authorization: `Bearer ${validate}` } })
-            .then((response) => {
-                console.log('Get successful', response.data.data);
-                setData(response.data.data);
-            }).catch((error) => {
-                console.log(error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Get Failed',
-                    text: 'An error occurred during get. Please try again.',
-                });
-            });
-    }
-
-    const { data: dataProfile } = useFetchList<DataProfile>({
-        url: 'https://mock-api.arikmpt.com/api/user/profile',
         method: 'GET',
         headers: {
             Authorization: `Bearer ${validate}`,
@@ -110,10 +73,7 @@ const DashboardPage: React.FC = () => {
     };
 
     const handleAddCategory = (values: Category) => {
-
-        console.log("clicked")
-
-        const getDataMap = dataList?.map((item) => item.name);
+        const getDataMap = data?.map((item) => item.name);
         if (getDataMap?.includes(values?.name)) {
             handleCloseAddModal();
             Swal.fire({
@@ -136,7 +96,7 @@ const DashboardPage: React.FC = () => {
                     title: 'Add Successful',
                     text: 'You have successfully added a new category.',
                 })
-                fetchData();
+                refresh();
             }).catch((error) => {
                 console.log(error);
                 Swal.fire({
@@ -158,7 +118,7 @@ const DashboardPage: React.FC = () => {
                     title: 'Delete Successful',
                     text: 'You have successfully deleted the category.',
                 })
-                fetchData();
+                refresh();
             }).catch((error) => {
                 console.log(error);
                 Swal.fire({
@@ -184,7 +144,7 @@ const DashboardPage: React.FC = () => {
                     title: 'Update Successful',
                     text: 'You have successfully updated the category.',
                 })
-                fetchData();
+                refresh();
             }).catch((error) => {
                 console.log(error);
                 Swal.fire({
@@ -378,22 +338,22 @@ const DashboardPage: React.FC = () => {
                 </DialogActions>
             </Dialog >
 
+            {/* Profile Data */}
             <Container
                 sx={{
                     width: "100%",
                     height: 250,
                 }}
             >
-                {/* Profile Data */}
                 <Paper elevation={3} style={{ padding: '20px' }}>
                     <Typography variant="h6" gutterBottom>
                         Profile Data
                     </Typography>
                     <Typography variant="body2" gutterBottom>
-                        Name: {dataProfile?.name}
+                        Name: {userProfile?.name}
                     </Typography>
                     <Typography variant="body2" gutterBottom>
-                        Email: {dataProfile?.email}
+                        Email: {userProfile?.email}
                     </Typography>
                     <Button
                         variant="contained"
@@ -416,9 +376,9 @@ const DashboardPage: React.FC = () => {
 
             {/* Grid table data */}
             <div style={{ height: 400, width: '100%' }}>
-                {dataList ? (
+                {data ? (
                     <DataGrid
-                        rows={dataList}
+                        rows={data}
                         columns={columns}
                         initialState={{
                             pagination: {

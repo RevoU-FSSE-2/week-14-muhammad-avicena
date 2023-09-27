@@ -21,7 +21,7 @@ export default function Error() {
         <Typography variant="h6">
           The page you’re looking for doesn’t exist.
         </Typography>
-        <Button variant="contained" style={{ marginTop: "10px" }} onClick={() => navigate('/dashboard')}>Back Home</Button>
+        <Button variant="contained" style={{ marginTop: "10px" }} onClick={() => navigate('/')}>Back Home</Button>
       </Container>
     </Box>
   );

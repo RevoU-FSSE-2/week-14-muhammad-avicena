@@ -1,5 +1,6 @@
 import { LoginPage, RegisterPage, DashboardPage, NotFoundPage } from './pages'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { UserProfileProvider } from './context/UserProfileContext'
 import './App.css'
 
 function App() {
@@ -25,7 +26,9 @@ function App() {
 
   return (
     <>
-      <RouterProvider router={router} />
+      <UserProfileProvider>
+        <RouterProvider router={router} />
+      </UserProfileProvider>
     </>
   )
 }
