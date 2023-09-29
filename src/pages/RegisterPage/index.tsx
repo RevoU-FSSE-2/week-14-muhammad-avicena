@@ -46,7 +46,7 @@ const RegistrationForm = () => {
                     text: 'You have successfully registered. You can now log in.',
                 })
                 setInterval(() => {
-                    window.location.replace('/')
+                    navigate('/')
                 }, 3000);
             })
             .catch((error) => {
