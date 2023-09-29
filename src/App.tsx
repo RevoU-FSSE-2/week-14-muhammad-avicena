@@ -8,7 +8,9 @@ function App() {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <LoginPage />
+      element: <LoginPage onSubmit={function (): void {
+        throw new Error('Function not implemented.')
+      } } />
     },
     {
       path: '/register',
