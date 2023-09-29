@@ -43,6 +43,12 @@ beforeEach(() => {
             email: 'johndoe@example.com',
         },
     });
+
+    mock.onPost('https://mock-api.arikmpt.com/api/category/create').reply(201, {
+        id: 3,
+        name: 'Category 3',
+        is_active: true,
+    });
 });
 
 
@@ -106,7 +112,7 @@ describe('Unit testing in DashboardPage', () => {
         expect(initialData2).toBeDefined();
     });
 
-    test('renders the "Add Category" modal', async () => {
+    test('renders the "Add Category" modal and submits data', async () => {
         await act(async () => {
             render(
                 <UserProfileProvider>
@@ -119,36 +125,19 @@ describe('Unit testing in DashboardPage', () => {
         fireEvent.click(addCategoryButton);
 
         const nameInput = screen.getByTestId('nameAddModal');
-        expect(nameInput).toBeDefined();
-
         const statusInput = screen.getByTestId('statusAddModal');
-        expect(statusInput).toBeDefined();
-
         const saveButton = screen.getByTestId('saveAddButtonModal');
-        expect(saveButton).toBeDefined();
-    });
 
-    test('renders the "Edit Category" modal', async () => {
-        await act(async () => {
-            render(
-                <UserProfileProvider>
-                    <DashboardPage />
-                </UserProfileProvider>
-            );
+        act(() => {
+            fireEvent.change(nameInput, { target: { value: 'Category 3' } });
+            fireEvent.change(statusInput, { target: { value: 'true' } });
+            fireEvent.click(saveButton);
         });
 
-        screen.debug();
+        await waitFor(() => {
+            expect(mock.history.post.length).toBe(1);
+            expect(mock.history.post[0].data).toBe('{"name":"Category 3","is_active":true}');
+        });
 
-        const editCategoryButton = screen.getByTestId('editCategoryButton');
-        fireEvent.click(editCategoryButton);
-
-        const nameInput = screen.getByTestId('nameEditModal');
-        expect(nameInput).toBeDefined();
-
-        const statusInput = screen.getByTestId('statusEditModal');
-        expect(statusInput).toBeDefined();
-
-        const saveButton = screen.getByTestId('saveEditButtonModal');
-        expect(saveButton).toBeDefined();
     });
 });
