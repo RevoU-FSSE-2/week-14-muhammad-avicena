@@ -35,6 +35,9 @@ pnpm install | npm install | yarn install
 # Run the project
 pnpm run dev | npm run dev | yarn run dev
 ```
+## UNIT TEST CHECK ✔️
+
+![Alt text](./assets-github/image.png)
 
 ## DEPLOYMENT ⚙️
 
