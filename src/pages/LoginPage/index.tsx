@@ -38,7 +38,7 @@ const LoginForm: React.FC<LoginPageProps> = () => {
                 text: 'You have successfully logged in. You will be redirected to dashboard shortly...',
             })
             setInterval(() => {
-                navigate('/dashboard')
+                window.location.replace('/dashboard')
             }, 3000);
         }).catch((error) => {
             console.log(error);
