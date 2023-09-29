@@ -5,6 +5,7 @@ import {
   useEffect,
   ReactNode,
 } from "react";
+import axios from "axios";
 import { DataProfile, UserProfileContextType } from "../types";
 
 const UserProfileContext = createContext<UserProfileContextType | undefined>(
@@ -34,15 +35,12 @@ export const UserProfileProvider = ({
   };
 
   useEffect(() => {
-    fetch("https://mock-api.arikmpt.com/api/user/profile", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${validate}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setUserProfile(data.data);
+    axios.get('https://mock-api.arikmpt.com/api/user/profile',
+      { headers: { Authorization: `Bearer ${validate}` } })
+      .then((response) => {
+        setUserProfile(response.data.data);
+      }).catch((error) => {
+        console.log(error);
       });
   }, []);
 

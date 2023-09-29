@@ -1,10 +1,11 @@
-import React from 'react';
 import { TextField, Button, Grid, Typography, Paper, Link } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import { FormValues } from '../../types';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import * as Yup from 'yup';
+import React from 'react';
 
 const validationSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Email is required'),
@@ -16,12 +17,11 @@ const initialValues = {
     password: '',
 };
 
-interface FormValues {
-    email: string;
-    password: string;
+interface LoginPageProps {
+    onSubmit: () => void;
 }
 
-const LoginForm: React.FC = () => {
+const LoginForm: React.FC<LoginPageProps> = () => {
 
     const navigate = useNavigate();
 
@@ -70,6 +70,7 @@ const LoginForm: React.FC = () => {
                                 <Field
                                     as={TextField}
                                     name="email"
+                                    placeholder="Email"
                                     label="Email"
                                     variant="outlined"
                                     fullWidth
@@ -81,6 +82,7 @@ const LoginForm: React.FC = () => {
                                     as={TextField}
                                     type="password"
                                     name="password"
+                                    placeholder="Email"
                                     label="Password"
                                     variant="outlined"
                                     fullWidth
@@ -88,7 +90,7 @@ const LoginForm: React.FC = () => {
                                     error={touched.password && Boolean(errors.password)}
                                     helperText={touched.password && errors.password}
                                 />
-                                <Button type="submit" variant="contained" color="primary" style={{ marginTop: "10px" }} fullWidth>
+                                <Button data-testid="submitButton" type="submit" variant="contained" color="primary" style={{ marginTop: "10px" }} fullWidth>
                                     Log In
                                 </Button>
 

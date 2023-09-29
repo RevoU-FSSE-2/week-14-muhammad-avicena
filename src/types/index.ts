@@ -9,6 +9,11 @@ export interface DataProfile {
   email: string;
 }
 
+export interface FormValues {
+    email: string;
+    password: string;
+}
+
 export interface FetchListResult<T> {
   data: T | null;
   loading: boolean;

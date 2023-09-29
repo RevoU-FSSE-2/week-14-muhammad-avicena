@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Formik, Form, Field } from 'formik';
@@ -30,10 +29,9 @@ const DashboardPage: React.FC = () => {
     const { userProfile } = useUserProfile();
 
     const validate = sessionStorage.getItem('userToken');
-    const navigate = useNavigate();
 
     if (!validate) {
-        navigate('/');
+        window.location.replace('/');
     }
 
     const { data, loading, error, refresh } = useFetchList<Category[]>({
@@ -174,6 +172,7 @@ const DashboardPage: React.FC = () => {
             renderCell: (params) => (
                 <div>
                     <Button
+                        data-testid="editCategoryButton"
                         variant="contained"
                         color="primary"
                         size="small"
@@ -186,6 +185,7 @@ const DashboardPage: React.FC = () => {
                         Edit
                     </Button>
                     <Button
+                        data-testid="deleteCategoryButton"
                         variant="contained"
                         color="error"
                         size="small"
@@ -230,23 +230,24 @@ const DashboardPage: React.FC = () => {
                 {({ touched, errors }) => (
                     <Dialog open={addModalOpen} onClose={handleCloseAddModal}>
                         <Form>
-                            <DialogTitle>Add Row</DialogTitle>
+                            <DialogTitle data-testid="addModalTitle">Add Category</DialogTitle>
                             <DialogContent>
                                 <Field
+                                    inputProps={{ "data-testid": "nameAddModal" }}
                                     type="text"
                                     name="name"
-                                    label="Name"
+                                    label="Name Category"
                                     as={TextField}
                                     fullWidth
                                     style={{ margin: '10px 0' }}
                                     error={touched.name && Boolean(errors.name)}
                                     helperText={touched.name && errors.name}
                                 />
-
                                 <Field
+                                    inputProps={{ "data-testid": "statusAddModal" }}
                                     type="text"
                                     name="is_active"
-                                    label="Status"
+                                    label="Status Category"
                                     as={TextField}
                                     select
                                     fullWidth
@@ -261,6 +262,7 @@ const DashboardPage: React.FC = () => {
                             <DialogActions>
                                 <Button onClick={handleCloseAddModal}>Cancel</Button>
                                 <Button
+                                    data-testid="saveAddButtonModal"
                                     variant="contained"
                                     color="primary"
                                     type="submit"
@@ -275,9 +277,10 @@ const DashboardPage: React.FC = () => {
 
             {/* Edit Modal Dialog */}
             < Dialog open={editModalOpen} onClose={handleCloseEditModal} >
-                <DialogTitle>Edit Row</DialogTitle>
+                <DialogTitle>Edit Category</DialogTitle>
                 <DialogContent>
                     <TextField
+                        data-testid="nameEditModal"
                         label="Name"
                         style={{ margin: '10px 0' }}
                         value={editedRow?.name || ''}
@@ -289,6 +292,7 @@ const DashboardPage: React.FC = () => {
                         fullWidth
                     />
                     <TextField
+                        data-testid="statusEditModal"
                         label="Status"
                         select
                         style={{ margin: '25px 0' }}
@@ -307,6 +311,7 @@ const DashboardPage: React.FC = () => {
                 <DialogActions>
                     <Button onClick={handleCloseEditModal}>Cancel</Button>
                     <Button
+                        data-testid="saveEditButtonModal"
                         variant="contained"
                         color="primary"
                         onClick={() => {
@@ -356,6 +361,7 @@ const DashboardPage: React.FC = () => {
                         Email: {userProfile?.email}
                     </Typography>
                     <Button
+                        data-testid="addCategoryButton"
                         variant="contained"
                         color="secondary"
                         onClick={handleAddModal}
@@ -375,7 +381,7 @@ const DashboardPage: React.FC = () => {
             </Container>
 
             {/* Grid table data */}
-            <div style={{ height: 400, width: '100%' }}>
+            <div data-testid="categoryTable" style={{ height: 400, width: '100%' }}>
                 {data ? (
                     <DataGrid
                         rows={data}

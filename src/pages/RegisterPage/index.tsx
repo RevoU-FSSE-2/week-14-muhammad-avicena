@@ -1,4 +1,3 @@
-import React from 'react';
 import { TextField, Button, Grid, Typography, Paper, Link } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { useNavigate } from 'react-router-dom';
@@ -28,10 +27,9 @@ interface FormValues {
     password: string;
 }
 
-const RegistrationForm: React.FC = () => {
+const RegistrationForm = () => {
 
     const navigate = useNavigate();
-
 
     const handleSubmit = (values: FormValues) => {
         axios
